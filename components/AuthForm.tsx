@@ -34,7 +34,19 @@ const AuthForm = ({ type }: { type: FormType }) => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {};
+  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    try {
+      if (type === "sign-up") {
+        toast.success("Account Created Successfully Plase Sign In.");
+        router.push("/sign-in");
+      } else {
+        toast.success("Sign in successfully.");
+        router.push("/");
+      }
+    } catch (error) {
+      toast.error(`An Error Occured! ${error}`);
+    }
+  };
 
   const isSignIn = type === "sign-in";
 
