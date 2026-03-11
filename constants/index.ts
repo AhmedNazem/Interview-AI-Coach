@@ -196,7 +196,7 @@ export const dummyInterviews: Interview[] = [
     level: "Junior",
     questions: ["What is React?"],
     finalized: false,
-    createdAt: "2024-03-15T10:00:00Z",
+    createdAt: "2025-03-15T10:00:00Z",
   },
   {
     id: "2",
@@ -207,6 +207,6 @@ export const dummyInterviews: Interview[] = [
     level: "Senior",
     questions: ["What is Node.js?"],
     finalized: false,
-    createdAt: "2024-03-14T15:30:00Z",
+    createdAt: "2025-03-14T15:30:00Z",
   },
 ];
