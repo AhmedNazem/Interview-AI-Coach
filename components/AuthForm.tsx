@@ -12,6 +12,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 
 import FormField from "./FormField";
+import { FormType } from "@/types";
 
 const authFormSchema = (type: FormType) => {
   return z.object({

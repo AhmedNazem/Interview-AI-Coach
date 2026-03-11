@@ -83,7 +83,7 @@ interface SignUpParams {
   password: string;
 }
 
-type FormType = "sign-in" | "sign-up";
+export type FormType = "sign-in" | "sign-up";
 
 interface InterviewFormProps {
   interviewId: string;
