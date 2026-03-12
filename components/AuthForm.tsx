@@ -7,6 +7,12 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { auth } from "@/firebase/client";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { signIn, signUp } from "@/lib/actions/auth.action";
 
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -17,7 +23,7 @@ const authFormSchema = (type: FormType) => {
   return z.object({
     name: type === "sign-up" ? z.string().min(3) : z.string().optional(),
     email: z.string().email(),
-    password: z.string().min(3),
+    password: z.string().min(5, "Password must be at least 5 characters"),
   });
 };
 
@@ -37,14 +43,51 @@ const AuthForm = ({ type }: { type: FormType }) => {
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     try {
       if (type === "sign-up") {
-        toast.success("Account Created Successfully Plase Sign In.");
+        const { name, email, password } = data;
+        const userCredentials = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+
+        if (userCredentials.user) {
+          await signUp({
+            uid: userCredentials.user.uid,
+            name: name!,
+            email: email,
+            password: password,
+          });
+        }
+
+        toast.success("Account Created Successfully. Please Sign In.");
         router.push("/sign-in");
       } else {
+        const { email, password } = data;
+        const userCredentials = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password,
+        );
+
+        const idToken = await userCredentials.user.getIdToken();
+
+        const response = await signIn({
+          email,
+          idToken,
+        });
+
+        if (!response?.success) {
+          toast.error(response?.message || "Failed to sign in");
+          return;
+        }
+
         toast.success("Sign in successfully.");
         router.push("/");
       }
-    } catch (error) {
-      toast.error(`An Error Occured! ${error}`);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Auth Error:", error);
+      toast.error(`An Error Occurred! ${error.message || error}`);
     }
   };
 
